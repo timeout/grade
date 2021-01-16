@@ -10,7 +10,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "OK")
+		fmt.Fprintf(w, "OK, Computer")
 	})
 
 	fmt.Println("Server listening")

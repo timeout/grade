@@ -3,13 +3,18 @@ FROM golang:1.15.6 AS build
 ENV GO111MODULE=on
 
 WORKDIR /src
-ADD . /src
 
+RUN go get github.com/cespare/reflex
+
+COPY go.mod .
+COPY go.sum .
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/server .
+
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build .
 
 FROM scratch AS bin
-COPY --from=build /out/server /app/
+COPY --from=build /src/server /app/
 
 EXPOSE 8080
-ENTRYPOINT ["/app/server"]
+CMD ["/app/server"]

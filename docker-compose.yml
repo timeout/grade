@@ -1,8 +1,11 @@
 version: '3'
 services:
     server:
-        build: ./server
-        command: server
+        build:
+            context: ./server
+            target: build
+        image: server
+        command: reflex -r "\.go$$" -s -- sh -c "go run ./"
         ports:
             - 8080:8080
         volumes:
