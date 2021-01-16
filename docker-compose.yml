@@ -1,0 +1,18 @@
+version: '3'
+services:
+    server:
+        build: ./server
+        command: ./server
+        volumes:
+            - ./server/:/src
+    ui:
+        build: ./ui
+        command: npm run start
+        ports:
+            - 3000:3000
+        volumes:
+            - ./ui/:/src
+            - ./ui/node_modules:/src/node_modules
+
+volumes:
+    nodemodules: {}
