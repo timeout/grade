@@ -1,7 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/gorilla/mux"
+	"net/http"
+)
 
 func main() {
-	fmt.Println("Starting server again ...")
+	r := mux.NewRouter()
+
+	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "OK")
+	})
+
+	fmt.Println("Server listening")
+	http.ListenAndServe(":80", r)
 }
