@@ -1,20 +1,37 @@
-version: '3'
+version: '3.8'
 services:
+    traefik:
+        image: traefik:latest
+        command:
+            - --log.level=INFO
+            - --api.insecure=true
+            - --entrypoints.web.address=:80
+            - --providers.docker
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        labels:
+            traefik.http.routers.dash.rule: Host(`dash.localhost`)
+            traefik.http.routers.dash.service: api@internal
+        ports:
+            - "80:80"
     server:
         build:
             context: ./server
             target: build
         image: server
         command: reflex -r "\.go$$" -s -- sh -c "go run ./"
-        ports:
-            - 8080:8080
+        labels:
+            - "traefik.http.routers.server.rule=(Host(`grades.localhost`) && PathPrefix(`/api`))"
+            - "traefik.http.services.server.loadbalancer.server.port=5000"
         volumes:
             - ./server/:/src
     ui:
         build: ./ui
+        image: ui
         command: npm run start
-        ports:
-            - 3000:3000
+        labels:
+            - "traefik.http.routers.ui.rule=Host(`grades.localhost`)"
+            - "traefik.http.services.ui.loadbalancer.server.port=3000"
         volumes:
             - ./ui/:/src
             - ./ui/node_modules:/src/node_modules
