@@ -9,10 +9,10 @@ import (
 func main() {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "OK, Computer")
+	r.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "OK")
 	})
 
 	fmt.Println("Server listening")
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":5000", r)
 }
